@@ -4,30 +4,35 @@ let carPosition = 0; //Initial car position
 let randomWords = []; //Array for words from n5_processed.csv
 let countdown; //Timer interval
 
-//GET WORDS FROM CSV FILE
-function loadWordsFromCSV() {
-    //fetch the file itself
-    fetch('n5_processed.csv')
-        //receive as plain text
-        .then(response => response.text())
-        //handle the plain text
-        .then(text => {
-            //put to randomWords array
-            const lines = text.split('\n');
-            for (let i = 1; i < lines.length; i++) { //Start at 1 to skip header
-                const columns = lines[i].split(',');
-                if (columns[0]) {
-                    randomWords.push(columns[0]);
-                }
-            }
-        });
-}
+let currentWord
 
+//GET WORDS FROM CSV FILE
+async function loadWordsFromCSV() {
+    // fetch csv; convert to plaintext; store in string array
+    const url = 'n5_processed.csv'            
+    const response = await fetch(url)       
+    const text = await response.text()              
+    const lines = text.split('\r').slice(1)
+    
+    // map array of lines to array of n5 word objects
+    randomWords = lines.map((line) => {
+        const [kana, romaji, meaning] = line.split(',')
+        return {
+            'kana': kana, 
+            'romaji': romaji, 
+            'meaning': meaning,
+        }
+    })
+
+    console.log(randomWords)
+}
 //DISPLAY A RANDOM WORD FROM THE CSV FILE
 function displayRandomWord() {
     const randomIndex = Math.floor(Math.random() * randomWords.length); //get a random index
+    currentWord = randomWords[randomIndex]
     const wordElement = document.getElementById('word'); //find word id in html file
-    wordElement.textContent = randomWords[randomIndex]; //display the random word in html file
+    wordElement.textContent = currentWord.kana; //display the random word in html file
+    console.log(currentWord)
 }
 
 //TIMER FUNCTION
@@ -67,17 +72,25 @@ function moveCar() {
 
 //FOR CHECKING THE TYPING INPUT
 function checkTypedWord(event) {
+    if (event.key !== 'Enter') return;
+
+    console.log('hello');
     const inputElement = document.getElementById('inputType'); //find inputType id in html file
-    const wordElement = document.getElementById('word'); //find word id in html file
     const correctMessageElement = document.getElementById('correctMessage'); //find correctMessage id in html file
-    
-    if (event.key === 'Enter' && inputElement.value === wordElement.textContent) {
+    const wrongMessageElement = document.getElementById('wrongMessage');
+
+    if ([currentWord.kana, currentWord.romaji].includes(inputElement.value)) {
         inputElement.value = ''; //clear the input
         displayRandomWord(); //display a new random word
         moveCar(); //move the car right
         correctMessageElement.style.display = 'block'; //show correct text
         setTimeout(() => {
             correctMessageElement.style.display = 'none'; //hide the correct text after 1 second
+        }, 1000); //1 second
+    } else {
+        wrongMessageElement.style.display = 'block'; //show correct text
+        setTimeout(() => {
+            wrongMessageElement.style.display = 'none'; //hide the correct text after 1 second
         }, 1000); //1 second
     }
 }
@@ -116,7 +129,7 @@ window.onload = function() {
 
     const inputElement = document.getElementById('inputType'); //find inputType id in html file
     inputElement.addEventListener('keydown', checkTypedWord); //check the typed word on keydown
-
+    
     const restartButton = document.getElementById('restartButton'); //find restartButton id in html file
     restartButton.addEventListener('click', restartGame); //restart the game on button click when it appears later
 };
