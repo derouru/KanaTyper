@@ -18,15 +18,15 @@ async function loadWordsFromCSV() {
     randomWords = lines.map((line) => {
         const [kana, romaji, ...meaning] = line.split(',')
         return {
-            'kana': kana, 
+            'kana': kana.slice(1),          // .slice(1) removes the '\n' character at the start 
             'romaji': romaji, 
-            'meaning': meaning.join(',') // sometimes, definitions will include commas
-                                         // .join(',') resolves that problem
-        }
+            'meaning': meaning.join(',')    // .join(',') reunites all strings that were split earlier
+        } 
     })
 
-    console.log(randomWords)
+    // console.log(randomWords)
 }
+
 //DISPLAY A RANDOM WORD FROM THE CSV FILE
 function displayRandomWord() {
     const randomIndex = Math.floor(Math.random() * randomWords.length); //get a random index
@@ -84,7 +84,7 @@ async function checkTypedWord(event) {
     const inputElement = document.getElementById('inputType'); //find inputType id in html file
     const correctMessageElement = document.getElementById('correctMessage'); //find correctMessage id in html file
     const wrongMessageElement = document.getElementById('wrongMessage');
-
+    console.log(currentWord.kana, inputElement.value)
     if ([currentWord.kana, currentWord.romaji].includes(inputElement.value)) {
         messageId = 'correctMessage'
         displayRandomWord()
@@ -96,10 +96,11 @@ async function checkTypedWord(event) {
     inputElement.value = ''; //clear the input
     messageElement = document.getElementById(messageId)
     messageElement.style.display = 'block';
-    setTimeout(() => {
-        correctMessageElement.style.display = 'none'; //hide the correct text after 1 second
-        wrongMessageElement.style.display = 'none'; //hide the correct text after 1 second
-    }, 1000); //1 second
+    
+    await delay(1000)
+    
+    correctMessageElement.style.display = 'none'; //hide the correct text after 1 second
+    wrongMessageElement.style.display = 'none'; //hide the correct text after 1 second
 }
 
 //FOR STARTING THE GAME
