@@ -17,7 +17,6 @@ async function loadWordsFromCSV() {
     // map array of lines to array of n5 word objects
     randomWords = lines.map((line) => {
         const [kana, romaji, ...meaning] = line.split(',')
-    
         return {
             'kana': kana, 
             'romaji': romaji, 
@@ -97,8 +96,10 @@ async function checkTypedWord(event) {
     inputElement.value = ''; //clear the input
     messageElement = document.getElementById(messageId)
     messageElement.style.display = 'block';
-    await delay(1000)
-    messageElement.style.display = 'none';
+    setTimeout(() => {
+        correctMessageElement.style.display = 'none'; //hide the correct text after 1 second
+        wrongMessageElement.style.display = 'none'; //hide the correct text after 1 second
+    }, 1000); //1 second
 }
 
 //FOR STARTING THE GAME
