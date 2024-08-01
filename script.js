@@ -16,11 +16,13 @@ async function loadWordsFromCSV() {
     
     // map array of lines to array of n5 word objects
     randomWords = lines.map((line) => {
-        const [kana, romaji, meaning] = line.split(',')
+        const [kana, romaji, ...meaning] = line.split(',')
+    
         return {
             'kana': kana, 
             'romaji': romaji, 
-            'meaning': meaning,
+            'meaning': meaning.join(',') // sometimes, definitions will include commas
+                                         // .join(',') resolves that problem
         }
     })
 
@@ -31,8 +33,14 @@ function displayRandomWord() {
     const randomIndex = Math.floor(Math.random() * randomWords.length); //get a random index
     currentWord = randomWords[randomIndex]
     const wordElement = document.getElementById('word'); //find word id in html file
-    wordElement.textContent = currentWord.kana; //display the random word in html file
+    wordElement.textContent = `${currentWord.kana}`; //display the random word in html file
+    const meaningElement = document.getElementById('meaning');
+    meaningElement.textContent = `${currentWord.meaning}`
+    
+   
+
     console.log(currentWord)
+    
 }
 
 //TIMER FUNCTION
@@ -71,28 +79,26 @@ function moveCar() {
 }
 
 //FOR CHECKING THE TYPING INPUT
-function checkTypedWord(event) {
+async function checkTypedWord(event) {
     if (event.key !== 'Enter') return;
 
-    console.log('hello');
     const inputElement = document.getElementById('inputType'); //find inputType id in html file
     const correctMessageElement = document.getElementById('correctMessage'); //find correctMessage id in html file
     const wrongMessageElement = document.getElementById('wrongMessage');
 
     if ([currentWord.kana, currentWord.romaji].includes(inputElement.value)) {
-        inputElement.value = ''; //clear the input
-        displayRandomWord(); //display a new random word
-        moveCar(); //move the car right
-        correctMessageElement.style.display = 'block'; //show correct text
-        setTimeout(() => {
-            correctMessageElement.style.display = 'none'; //hide the correct text after 1 second
-        }, 1000); //1 second
+        messageId = 'correctMessage'
+        displayRandomWord()
+        moveCar()
     } else {
-        wrongMessageElement.style.display = 'block'; //show correct text
-        setTimeout(() => {
-            wrongMessageElement.style.display = 'none'; //hide the correct text after 1 second
-        }, 1000); //1 second
+        messageId = 'wrongMessage'
     }
+
+    inputElement.value = ''; //clear the input
+    messageElement = document.getElementById(messageId)
+    messageElement.style.display = 'block';
+    await delay(1000)
+    messageElement.style.display = 'none';
 }
 
 //FOR STARTING THE GAME
@@ -133,3 +139,10 @@ window.onload = function() {
     const restartButton = document.getElementById('restartButton'); //find restartButton id in html file
     restartButton.addEventListener('click', restartGame); //restart the game on button click when it appears later
 };
+
+// UTILITY FUNCTIONS //
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
