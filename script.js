@@ -3,7 +3,8 @@ let timer = 180; //Initial timer
 let carPosition = 0; //Initial car position
 let randomWords = []; //Array for words from n5_processed.csv
 let countdown; //Timer interval
-
+let velocity = 0;
+let distance = 0;
 let currentWord
 
 //GET WORDS FROM CSV FILE
@@ -87,6 +88,8 @@ async function checkTypedWord(event) {
     console.log(currentWord.kana, inputElement.value)
     if ([currentWord.kana, currentWord.romaji].includes(inputElement.value)) {
         messageId = 'correctMessage'
+        speedUp()
+        
         displayRandomWord()
         moveCar()
     } else {
@@ -105,6 +108,8 @@ async function checkTypedWord(event) {
 
 //FOR STARTING THE GAME
 function startGame() {
+    slowDown()
+    setDistance()
     const inputElement = document.getElementById('inputType'); //find inputType id in html file
     inputElement.disabled = false; //enable the input field
     inputElement.focus(); //focus on the input field
@@ -118,6 +123,8 @@ function startGame() {
 
 //FOR RESTARTING THE GAME(?)
 function restartGame() {
+    velocity = 0
+    distance = 0
     timer = 180; //reset timer back to 180 seconds
     carPosition = 0; //reset the car position
     document.querySelector('img').style.left = carPosition + 'px'; //reset car position
@@ -143,6 +150,49 @@ window.onload = function() {
 };
 
 // UTILITY FUNCTIONS //
+
+function speedUp() {
+    velocity += 17
+    updateVelocity()
+}
+
+async function slowDown() {
+    const constantDecrement = 1.5
+    const percentageDecrement = 0.1
+    let totalDecrement
+
+    const delayTime = 700
+    while(true) {
+        await delay(delayTime)
+        totalDecrement =  constantDecrement + velocity * percentageDecrement 
+        
+        if (velocity <= totalDecrement) {velocity = 0}
+        else {velocity = Math.floor((velocity - totalDecrement) * 100) / 100}
+        console.log(velocity)   
+
+        updateVelocity()
+    }
+}
+
+function reallySlowDown() {
+}
+
+
+function updateVelocity() {
+    velocity = Math.floor(velocity * 100) / 100
+    document.getElementById('velocity').textContent = `velocity: ${velocity}m/s`
+}
+
+async function setDistance() {
+    const interval = 100 
+    console.log(distance)
+    while(true) {
+        await delay(interval)
+        distance = Math.floor((distance + velocity * interval / 1000) * 100) / 100
+
+        document.getElementById('distance').textContent = `distance: ${distance}m`
+    }
+}
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
