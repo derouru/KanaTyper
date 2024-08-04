@@ -65,6 +65,7 @@ function startTimer() {
 //FOR MOVING THE CAR PNG
 function moveCar() {
     const carElement = document.querySelector('img'); //find car img tag in html file
+    const backgroundElement = document.querySelector('.background'); //find bg img tag in html file
     //carPosition += 50; //move the car forward by 50 pixels. Change later(?)
     //carElement.style.left = carPosition + 'px'; //update car position
     carPosition += velocity; //move the car forward by the current velocity
@@ -73,6 +74,10 @@ function moveCar() {
     //slow the car using "friction"
     velocity *= friction;
 
+    //move background to the left whenever car moves
+    const backgroundSpeed = 1.5;
+    backgroundElement.style.backgroundPositionX = `-${carPosition * backgroundSpeed}px`; 
+
     //if the velocity is very small, just stop the animation directly
     if (Math.abs(velocity) > 0.01) {
         requestAnimationFrame(moveCar);
@@ -80,7 +85,7 @@ function moveCar() {
 
     //check if screen is wide
     if (window.innerWidth <= 600) { //if small screen
-        stopThreshold = window.innerWidth - carElement.width*1.2; // 20px margin from the right edge
+        stopThreshold = window.innerWidth - carElement.width*1.1; // 20px margin from the right edge
     } else { //else if big screen
         stopThreshold = window.innerWidth - carElement.width - 100; // 100px margin from the right edge
     }
@@ -171,7 +176,7 @@ window.onload = function() {
 // UTILITY FUNCTIONS //
 
 function speedUp() {
-    velocity += 11
+    velocity += 8
     updateVelocity()
 }
 

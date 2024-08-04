@@ -21,7 +21,20 @@
         <!--CAR VISUALS-->
         <div id="gameArea" class="position-relative mb-3" style="height: 200px;">
             <!--SAMPLE FROM IRASUTOYA IMAGES-->
-            <img src="car.png" alt="car" width="300px" height="auto" class="position-absolute" style="top: 50%; transform: translateY(-50%); left: 0;">
+            <div class="background" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('bg.png');
+            background-repeat: repeat-x;
+            background-size: cover;
+            background-position: bottom;
+            transition: background-position 0.1s linear;
+        "></div>
+            
+            <img src="car.png" alt="car" width="25%" height="auto" class="position-absolute" style="top: 62%; transform: translateY(-50%); left: 0;">
         </div>
         <!--START BUTTON-->
         <button id="startButton" class="btn btn-primary btn-md mb-3">START</button>
