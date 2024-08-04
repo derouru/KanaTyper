@@ -6,6 +6,7 @@ let countdown; //Timer interval
 let velocity = 0;
 let distance = 0;
 let currentWord
+let friction = 0.88;  //For slowing/smoothing the car animation
 
 //GET WORDS FROM CSV FILE
 async function loadWordsFromCSV() {
@@ -37,8 +38,6 @@ function displayRandomWord() {
     const meaningElement = document.getElementById('meaning');
     meaningElement.textContent = `${currentWord.meaning}`
     
-   
-
     console.log(currentWord)
     
 }
@@ -66,15 +65,34 @@ function startTimer() {
 //FOR MOVING THE CAR PNG
 function moveCar() {
     const carElement = document.querySelector('img'); //find car img tag in html file
-    carPosition += 50; //move the car forward by 50 pixels. Change later(?)
+    //carPosition += 50; //move the car forward by 50 pixels. Change later(?)
+    //carElement.style.left = carPosition + 'px'; //update car position
+    carPosition += velocity; //move the car forward by the current velocity
     carElement.style.left = carPosition + 'px'; //update car position
 
+    //slow the car using "friction"
+    velocity *= friction;
+
+    //if the velocity is very small, just stop the animation directly
+    if (Math.abs(velocity) > 0.01) {
+        requestAnimationFrame(moveCar);
+    }
+
+    //check if screen is wide
+    if (window.innerWidth <= 600) { //if small screen
+        stopThreshold = window.innerWidth - carElement.width*1.2; // 20px margin from the right edge
+    } else { //else if big screen
+        stopThreshold = window.innerWidth - carElement.width - 100; // 100px margin from the right edge
+    }
     //stop moving the car beyond a certain point
-    if (carPosition >= window.innerWidth - carElement.width) {
+    if (carPosition >= stopThreshold) {
         alert('You reached the end!'); //alert game win
         clearInterval(countdown); //stop timer
         document.getElementById('inputType').disabled = true; //disable the input field
+        carPosition = 0; //reset the car position
+        velocity = 0; //reset velocity
         document.getElementById('restartButton').style.display = 'block'; //show restart button
+
     }
 }
 
@@ -131,6 +149,7 @@ function restartGame() {
     document.getElementById('timer').textContent = timer; //reset timer
     document.getElementById('inputType').disabled = true; //disable input field initially
     document.getElementById('word').textContent = ''; //clear the displayed word
+    document.getElementById('meaning').textContent = ''; //clear the displayed word
     document.getElementById('restartButton').style.display = 'none'; //hide the restart button
     document.getElementById('startButton').style.display = 'block'; //show the start button
 }
@@ -152,7 +171,7 @@ window.onload = function() {
 // UTILITY FUNCTIONS //
 
 function speedUp() {
-    velocity += 17
+    velocity += 11
     updateVelocity()
 }
 
@@ -197,4 +216,3 @@ async function setDistance() {
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
-
