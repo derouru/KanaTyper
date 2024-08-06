@@ -56,12 +56,12 @@ function startTimer() {
         timerElement.textContent = timer; //update timer display
 
         //check if timer = 0
-        if (timer <= 0) {
+        if (timer == 0) {
             clearInterval(countdown); //stop timer
             alert('GAME OVER!'); //alert game over 
-            audioLose.play()
             document.getElementById('inputType').disabled = true; //disable the input field
             document.getElementById('restartButton').style.display = 'inline'; //show restart button
+            audioLose.play()
         }
     }, 1000); //update every second (1000 milliseconds)
 }
