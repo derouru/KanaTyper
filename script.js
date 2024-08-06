@@ -1,5 +1,5 @@
 // DECLARE VARIABLES
-let timer = 90; //Initial timer
+let timer = 180; //Initial timer
 let carPosition = 0; //Initial car position
 let randomWords = []; //Array for words from n5_processed.csv
 let countdown; //Timer interval
@@ -7,6 +7,8 @@ let velocity = 0;
 let distance = 0;
 let currentWord
 let friction = 0.999999;  //For slowing/smoothing the car animation
+var audioCorrect = new Audio('correct.mp3');
+var audioWin = new Audio('win.mp3');
 
 //GET WORDS FROM CSV FILE
 async function loadWordsFromCSV() {
@@ -64,7 +66,7 @@ function startTimer() {
 
 //FOR MOVING THE CAR PNG
 function moveCar() {
-    const carElement = document.querySelector('img'); //find car img tag in html file
+    const carElement = document.getElementById('car'); //find car img tag in html file
     const backgroundElement = document.querySelector('.background'); //find bg img tag in html file
     //carPosition += 50; //move the car forward by 50 pixels. Change later(?)
     //carElement.style.left = carPosition + 'px'; //update car position
@@ -75,7 +77,7 @@ function moveCar() {
     velocity *= friction;
 
     //move background to the left whenever car moves
-    const backgroundSpeed = 1.5;
+    const backgroundSpeed = 20;
     backgroundElement.style.backgroundPositionX = `-${carPosition * backgroundSpeed}px`; 
 
     //if the velocity is very small, just stop the animation directly
@@ -98,6 +100,7 @@ function moveCar() {
         velocity = 0; //reset velocity
         document.getElementById('restartButton').style.display = 'block'; //show restart button
 
+        audioWin.play()
     }
 }
 
@@ -111,10 +114,12 @@ async function checkTypedWord(event) {
     console.log(currentWord.kana, inputElement.value)
     if ([currentWord.kana, currentWord.romaji].includes(inputElement.value)) {
         messageId = 'correctMessage'
+
         speedUp()
-        
         displayRandomWord()
         moveCar()
+
+        audioCorrect.play()
     } else {
         messageId = 'wrongMessage'
     }
@@ -148,9 +153,9 @@ function startGame() {
 function restartGame() {
     velocity = 0
     distance = 0
-    timer = 90; //reset timer back to 180 seconds
+    timer = 180; //reset timer back to 180 seconds
     carPosition = 0; //reset the car position
-    document.querySelector('img').style.left = carPosition + 'px'; //reset car position
+    document.getElementById('car').style.left = carPosition + 'px'; //reset car position
     document.getElementById('timer').textContent = timer; //reset timer
     document.getElementById('inputType').disabled = true; //disable input field initially
     document.getElementById('word').textContent = ''; //clear the displayed word
