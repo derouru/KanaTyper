@@ -1,12 +1,12 @@
 // DECLARE VARIABLES
-let timer = 180; //Initial timer
+let timer = 60; //Initial timer
 let carPosition = 0; //Initial car position
 let randomWords = []; //Array for words from n5_processed.csv
 let countdown; //Timer interval
 let velocity = 0;
 let distance = 0;
 let currentWord
-let friction = 0.88;  //For slowing/smoothing the car animation
+let friction = 0.9999;  //For slowing/smoothing the car animation
 
 //GET WORDS FROM CSV FILE
 async function loadWordsFromCSV() {
@@ -68,7 +68,7 @@ function moveCar() {
     const backgroundElement = document.querySelector('.background'); //find bg img tag in html file
     //carPosition += 50; //move the car forward by 50 pixels. Change later(?)
     //carElement.style.left = carPosition + 'px'; //update car position
-    carPosition += velocity; //move the car forward by the current velocity
+    carPosition += velocity/25; //move the car forward by the current velocity divided by 25
     carElement.style.left = carPosition + 'px'; //update car position
 
     //slow the car using "friction"
@@ -85,9 +85,9 @@ function moveCar() {
 
     //check if screen is wide
     if (window.innerWidth <= 600) { //if small screen
-        stopThreshold = window.innerWidth - carElement.width*1.1; // 20px margin from the right edge
+        stopThreshold = window.innerWidth - carElement.width*1.2;
     } else { //else if big screen
-        stopThreshold = window.innerWidth - carElement.width - 100; // 100px margin from the right edge
+        stopThreshold = window.innerWidth - carElement.width*1.4;
     }
     //stop moving the car beyond a certain point
     if (carPosition >= stopThreshold) {
@@ -148,7 +148,7 @@ function startGame() {
 function restartGame() {
     velocity = 0
     distance = 0
-    timer = 180; //reset timer back to 180 seconds
+    timer = 60; //reset timer back to 180 seconds
     carPosition = 0; //reset the car position
     document.querySelector('img').style.left = carPosition + 'px'; //reset car position
     document.getElementById('timer').textContent = timer; //reset timer
