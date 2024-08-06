@@ -98,7 +98,7 @@ function moveCar() {
         document.getElementById('inputType').disabled = true; //disable the input field
         carPosition = 0; //reset the car position
         velocity = 0; //reset velocity
-        document.getElementById('restartButton').style.display = 'block'; //show restart button
+        document.getElementById('restartButton').style.display = 'inline'; //show restart button
 
         audioWin.play()
     }
@@ -161,7 +161,7 @@ function restartGame() {
     document.getElementById('word').textContent = ''; //clear the displayed word
     document.getElementById('meaning').textContent = ''; //clear the displayed word
     document.getElementById('restartButton').style.display = 'none'; //hide the restart button
-    document.getElementById('startButton').style.display = 'block'; //show the start button
+    document.getElementById('startButton').style.display = 'inline'; //show the start button
 }
 
 //FUNCTIONS TO CALL WHEN PAGE LOADS
