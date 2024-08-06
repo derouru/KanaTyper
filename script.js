@@ -1,12 +1,12 @@
 // DECLARE VARIABLES
-let timer = 60; //Initial timer
+let timer = 90; //Initial timer
 let carPosition = 0; //Initial car position
 let randomWords = []; //Array for words from n5_processed.csv
 let countdown; //Timer interval
 let velocity = 0;
 let distance = 0;
 let currentWord
-let friction = 0.9999;  //For slowing/smoothing the car animation
+let friction = 0.999999;  //For slowing/smoothing the car animation
 
 //GET WORDS FROM CSV FILE
 async function loadWordsFromCSV() {
@@ -68,7 +68,7 @@ function moveCar() {
     const backgroundElement = document.querySelector('.background'); //find bg img tag in html file
     //carPosition += 50; //move the car forward by 50 pixels. Change later(?)
     //carElement.style.left = carPosition + 'px'; //update car position
-    carPosition += velocity/25; //move the car forward by the current velocity divided by 25
+    carPosition += velocity/40; //move the car forward by the current velocity divided by 25
     carElement.style.left = carPosition + 'px'; //update car position
 
     //slow the car using "friction"
@@ -148,7 +148,7 @@ function startGame() {
 function restartGame() {
     velocity = 0
     distance = 0
-    timer = 60; //reset timer back to 180 seconds
+    timer = 90; //reset timer back to 180 seconds
     carPosition = 0; //reset the car position
     document.querySelector('img').style.left = carPosition + 'px'; //reset car position
     document.getElementById('timer').textContent = timer; //reset timer
@@ -176,7 +176,7 @@ window.onload = function() {
 // UTILITY FUNCTIONS //
 
 function speedUp() {
-    velocity += 8
+    velocity += 10
     updateVelocity()
 }
 
