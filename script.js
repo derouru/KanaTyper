@@ -9,6 +9,7 @@ let currentWord
 let friction = 0.999999;  //For slowing/smoothing the car animation
 var audioCorrect = new Audio('correct.mp3');
 var audioWin = new Audio('win.mp3');
+var audioLose = new Audio('lose.mp3');
 
 //GET WORDS FROM CSV FILE
 async function loadWordsFromCSV() {
@@ -58,8 +59,9 @@ function startTimer() {
         if (timer <= 0) {
             clearInterval(countdown); //stop timer
             alert('GAME OVER!'); //alert game over 
+            audioLose.play()
             document.getElementById('inputType').disabled = true; //disable the input field
-            document.getElementById('restartButton').style.display = 'block'; //show restart button
+            document.getElementById('restartButton').style.display = 'inline'; //show restart button
         }
     }, 1000); //update every second (1000 milliseconds)
 }
@@ -181,7 +183,7 @@ window.onload = function() {
 // UTILITY FUNCTIONS //
 
 function speedUp() {
-    velocity += 10
+    velocity += 13
     updateVelocity()
 }
 
