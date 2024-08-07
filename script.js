@@ -6,10 +6,12 @@ let countdown; //Timer interval
 let velocity = 0;
 let distance = 0;
 let currentWord
-let friction = 0.999999;  //For slowing/smoothing the car animation
+let friction = 0.9925;  //For slowing/smoothing the car animation
 var audioCorrect = new Audio('correct.mp3');
 var audioWin = new Audio('win.mp3');
 var audioLose = new Audio('lose.mp3');
+let isSlowingDown = false; // Flag to track if slowDown is running
+
 
 //GET WORDS FROM CSV FILE
 async function loadWordsFromCSV() {
@@ -138,7 +140,10 @@ async function checkTypedWord(event) {
 
 //FOR STARTING THE GAME
 function startGame() {
-    slowDown()
+    //call once only when game is first started
+    if (!isSlowingDown) {
+        slowDown();
+    }
     setDistance()
     const inputElement = document.getElementById('inputType'); //find inputType id in html file
     inputElement.disabled = false; //enable the input field
@@ -164,6 +169,10 @@ function restartGame() {
     document.getElementById('meaning').textContent = ''; //clear the displayed word
     document.getElementById('restartButton').style.display = 'none'; //hide the restart button
     document.getElementById('startButton').style.display = 'inline'; //show the start button
+
+    // Reset background position
+    const backgroundElement = document.querySelector('.background');
+    backgroundElement.style.backgroundPositionX = '0px';
 }
 
 //FUNCTIONS TO CALL WHEN PAGE LOADS
@@ -188,6 +197,9 @@ function speedUp() {
 }
 
 async function slowDown() {
+    if (isSlowingDown) return;
+    isSlowingDown = true;
+    
     const constantDecrement = 1.5
     const percentageDecrement = 0.1
     let totalDecrement
