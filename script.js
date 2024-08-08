@@ -160,7 +160,7 @@ function startGame() {
 function restartGame() {
     velocity = 0
     distance = 0
-    timer = 180; //reset timer back to 180 seconds
+    timer = 90; //reset timer back to 9 seconds
     carPosition = 0; //reset the car position
     document.getElementById('car').style.left = carPosition + 'px'; //reset car position
     document.getElementById('timer').textContent = timer; //reset timer
